@@ -29,13 +29,11 @@ import './main.html';
         data: function()
         {
             var playerID = this.params._id;
-            //Tracker.autorun(function(){
-               var sub = Meteor.subscribe("PlayerStats");
-                if(sub.ready())
-                {
-                    setHelpers(playerID);
-                }
-            //});
+            var sub = Meteor.subscribe("PlayerStats");
+            if(sub.ready())
+            {
+                setHelpers(playerID);
+            }
         }
     });
 
@@ -45,10 +43,14 @@ function setHelpers(playerID)
     //{
         var statsOBJ = PlayerStats.find(playerID).fetch()[0];
         var user = Meteor.users.find(playerID).fetch()[0];
-        Session.set("Username",user.username);
-        Session.set("UserExp",statsOBJ.exp);
-        Session.set("UserHighRound",statsOBJ.maxRound);
-        Session.set("UserKills",statsOBJ.kills);
+        console.log(user.username);
+        if(user!=undefined)
+        {
+            Session.set("Username",user.username);
+            Session.set("UserExp",statsOBJ.exp);
+            Session.set("UserHighRound",statsOBJ.maxRound);
+            Session.set("UserKills",statsOBJ.kills);
+        }
     //}
     
 }

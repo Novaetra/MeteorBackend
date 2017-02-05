@@ -8,6 +8,11 @@ window.onload = function()
     Meteor.subscribe("PlayerStats");
 }
 
+Accounts.onLogin(function(){
+  console.log(Meteor.userId());
+  Router.go("Profile",{_id:Meteor.userId()});
+});
+
 Template.Register.events({
     "submit form":function(e)
     {
@@ -16,7 +21,7 @@ Template.Register.events({
         var username = $("[name=username]").val();
         var password = $("[name=password]").val();
         var results = CreatePlayer(email,username, password);
-        Router.go("Profile",{_id:results});
+        Router.go("Login");
     }
 });
 
@@ -40,7 +45,6 @@ Template.Login.events({
             else
             {
                 console.log("Login success!");
-                Router.go("Profile",{_id:Meteor.userId()});
             }
         });
     }
@@ -65,6 +69,15 @@ Template.Profile.helpers({
         return Session.get('UserKills');
     }
 }); 
+
+Template.Main.events({
+    "click .Logout":function(e)
+    {
+        e.preventDefault();
+        Meteor.logout();
+        Router.go("Login");
+    }
+})
 
 
 function CreatePlayer(email,username,password)

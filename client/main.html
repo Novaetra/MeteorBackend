@@ -10,6 +10,9 @@
     <h1 id="Title"> The Others</h1>
     
     {{> yield}}
+    {{#if currentUser}}
+        <a class="Logout"> Logout </a>
+    {{/if}}
 </template>
 
 <template name="Profile">
