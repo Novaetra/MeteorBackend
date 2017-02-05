@@ -1,19 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 
-Meteor.startup(() => 
+Tracker.autorun(function()
 {
     DeclareMeteorMethods();
     PublishCollections();
 });
 
-
-//Publishes collections
-function PublishCollections()
-{
-    Meteor.publish("PlayerStats", function(){
-        return PlayerStats.find();
-    });
-}
 
 //Sets the stats of a player inside the ‘PlayerStats’ collection
 function SetStats(roundsSurvived,experienceGained,enemiesKilled,playerID)
@@ -25,13 +17,7 @@ function SetStats(roundsSurvived,experienceGained,enemiesKilled,playerID)
                 {
                     var plr = PlayerStats.find(user._id).fetch()[0];
                     console.log("FOUND HIM! -- " + plr.username);
-                    
-                    if(roundsSurvived>plr.maxRounds)
-                    {
-                        PlayerStats.update(plr._id,{$max: {maxRounds: roundsSurvived}});
-                        console.log("Updated rounds survived to " + PlayerStats.find(playerID).fetch()[0].maxRounds);
-                    }
-                    
+                    PlayerStats.update(plr._id,{$max: {maxRound: roundsSurvived}});
                     PlayerStats.update(plr._id,{$inc: {exp: experienceGained}});
                     PlayerStats.update(plr._id,{$inc: {kills: enemiesKilled}});
                     console.log("Updated exp to " + PlayerStats.find(playerID).fetch()[0].exp);
@@ -50,6 +36,16 @@ function SetStats(roundsSurvived,experienceGained,enemiesKilled,playerID)
             }
 }
 
+//Publishes collections
+function PublishCollections()
+{
+    Meteor.publish("PlayerStats", function(){
+        console.log("publishing");
+        return PlayerStats.find();
+    });
+}
+
+
 //Declares the meteor methods
 function DeclareMeteorMethods()
 {
@@ -57,16 +53,15 @@ function DeclareMeteorMethods()
 //Creates a new player account
         "CreateNewPlayer":function(email,username,password)
         {
-            Accounts.createUser({
-            email:email,
-            username:username,
-            password:password
-            },function(error,results)
-            {
-                return results;
+            console.log("Creating new player with " + email + " : " + username);
+            var result = Accounts.createUser({
+                email:email,
+                username:username,
+                password:password
             });
+            console.log(result);
+            return result;
 		//This just makes sure the player is added to the ‘PlayerStats’ collectio as well.
-            SetStats(0,0,0,Meteor.userId());
         },
         "SetStats":function(roundsSurvived,experienceGained,enemiesKilled,playerID)
         {

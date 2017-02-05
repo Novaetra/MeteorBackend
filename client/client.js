@@ -2,13 +2,10 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
-
 window.onload = function()
-{
-    Meteor.subscribe("PlayerStats",function(){
-        ConfigureRouter();
-        DeclareHelpers();
-    });
+{ 
+    console.log("subscribing");
+    Meteor.subscribe("PlayerStats");
 }
 
 Template.Register.events({
@@ -18,7 +15,7 @@ Template.Register.events({
         var email = $("[name=email]").val();
         var username = $("[name=username]").val();
         var password = $("[name=password]").val();
-        var results = Meteor.call("CreateNewPlayer",email,username,password);
+        var results = CreatePlayer(email,username, password);
         Router.go("Profile",{_id:results});
     }
 });
@@ -49,39 +46,41 @@ Template.Login.events({
     }
 });
 
-
-function DeclareHelpers()
-{
-    var profileID = window.location.href.split("/");
-    for(var i=0;i<profileID.length-1;i++)
+Template.Profile.helpers({
+    "Username":function()
+    {  
+        return Session.get('Username');
+    },
+    "Exp":function()
+    { 
+        console.log(Session.get('UserExp'));
+        return Session.get('UserExp');
+    },
+    "HighestRound":function()
     {
-        if(profileID[i]=="Profile")
-        {
-            profileID = profileID[i+1];
-        }
+        return Session.get('UserHighRound');
+    },
+    "Kills":function()
+    {
+        return Session.get('UserKills');
     }
-    console.log(profileID);
-    console.log(PlayerStats.find().fetch());
-    var statsOBJ = PlayerStats.find(profileID).fetch()[0];
-    Template.Profile.helpers({
-            "Username":function()
-            {  
-                return Meteor.users.find(profileID).fetch()[0].username;
-            },
-            "Exp":function()
-            { 
-                return statsOBJ.exp; 
-            },
-            "HighestRound":function()
-            {
-                return statsOBJ.maxRound;
-            },
-            "Kills":function()
-            {
-                return statsOBJ.kills;
-            }
-        }); 
+}); 
+
+
+function CreatePlayer(email,username,password)
+{
+    Meteor.call("CreateNewPlayer",email,username,password, function(error, result)
+    {
+        console.log(result + error);
+        if(result!=undefined)
+        {
+            Meteor.call("SetStats",0,0,0,result);
+            return result; 
+        }
+    });
 }
+
+
 
 /*
 //Declares what functions are called when pages are rendered

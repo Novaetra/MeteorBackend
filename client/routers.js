@@ -1,14 +1,14 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
 
+import './main.html';
 
-ConfigureRouter = function()
-{
     Router.configure({
         layoutTemplate: "Main"
     });
     
-    Router.route("/",{
-        name:"Home",
-        template:"Login"
+    Router.route('/', function () {
+      Router.go("/Login");
     });
     
     Router.route("/Login",
@@ -28,7 +28,27 @@ ConfigureRouter = function()
         template:"Profile",
         data: function()
         {
-            
+            var playerID = this.params._id;
+            //Tracker.autorun(function(){
+               var sub = Meteor.subscribe("PlayerStats");
+                if(sub.ready())
+                {
+                    setHelpers(playerID);
+                }
+            //});
         }
     });
+
+function setHelpers(playerID)
+{
+    //if(Meteor.isClient)
+    //{
+        var statsOBJ = PlayerStats.find(playerID).fetch()[0];
+        var user = Meteor.users.find(playerID).fetch()[0];
+        Session.set("Username",user.username);
+        Session.set("UserExp",statsOBJ.exp);
+        Session.set("UserHighRound",statsOBJ.maxRound);
+        Session.set("UserKills",statsOBJ.kills);
+    //}
+    
 }
