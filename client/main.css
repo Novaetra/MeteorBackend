@@ -1,16 +1,22 @@
-#Title
-{
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300|Oxygen:700');
+body {
+  background-color:#fff;
+  -webkit-font-smoothing: antialiased;
+  font: normal 14px 'Open Sans', sans-serif;
 }
 
-.InputBox
-{
-    margin-left: auto;
-    margin-right: auto;
+h1, h2, h3, h4 {
+    font-family: 'Oxygen', sans-serif;
+}
+
+form#LoginForm, form#SignupForm {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: -20px;
+    margin-right: -20px;
     border: 1px solid black;
-    border-top-left-radius: 5px;border-top-right-radius: 5px;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;
-    text-align: center;
-    width: 50%;
+    border-radius: 15px;
+    box-shadow: -5px 7px 13px #cfcfcf
 }
