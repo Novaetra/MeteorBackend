@@ -1,10 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 
+WebApp.connectHandlers.use("/health", function (req, res, next) {
+    res.writeHead(200);
+    res.end();
+});
+
 Tracker.autorun(function () {
     DeclareMeteorMethods();
     PublishCollections();
 });
-
 
 //Sets the stats of a player inside the ‘PlayerStats’ collection
 function SetStats(roundsSurvived, experienceGained, enemiesKilled, playerID) {
@@ -39,7 +43,6 @@ function PublishCollections() {
     });
 }
 
-
 //Declares the meteor methods
 function DeclareMeteorMethods() {
     Meteor.methods({
@@ -53,7 +56,7 @@ function DeclareMeteorMethods() {
             });
             console.log(result);
             return result;
-            //This just makes sure the player is added to the ‘PlayerStats’ collectio as well.
+            //This just makes sure the player is added to the ‘PlayerStats’ collection as well.
         },
         "SetStats": function (roundsSurvived, experienceGained, enemiesKilled, playerID) {
             SetStats(roundsSurvived, experienceGained, enemiesKilled, playerID);
@@ -83,7 +86,7 @@ function GetCollection(name) {
     }
 
     if (collectionArray == null) {
-        console.log("Couldnt find it");
+        console.log("Couldn't find: " + name);
         return;
     }
 
@@ -105,10 +108,11 @@ function GetCollection(name) {
 function GetUsers() {
     var collectionArray = Meteor.users.find().fetch();
     var arrayString = "";
-    console.log(collectionArray.length);
+    console.log("Length of collection: " + collectionArray.length);
     for (var i = 0; i < collectionArray.length; i++) {
         var item = collectionArray[i];
         arrayString += item.username + ">" + item._id + "<";
     }
     console.log("Returning " + arrayString);
+    return arrayString;
 }
