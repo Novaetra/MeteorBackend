@@ -1,5 +1,5 @@
 {
-  "name": "TheHollowedDB",
+  "name": "the-others",
   "private": true,
   "scripts": {
     "start": "meteor run"
