@@ -60,6 +60,7 @@ function DeclareMeteorMethods() {
         },
         "SetStats": function (roundsSurvived, experienceGained, enemiesKilled, playerID) {
             SetStats(roundsSurvived, experienceGained, enemiesKilled, playerID);
+            return "Updated stats!";
         },
         //Returns a collection
         "GetCollection": function (name) {
