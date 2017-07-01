@@ -80,7 +80,6 @@ function GetCollection(name) {
         case "Users":
             //This requires a special method because the Meteor.users collection contains a lot of additional items we dont need.
             return GetUsers();
-            break;
         default:
             collectionArray = null;
             break;
